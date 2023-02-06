@@ -18,8 +18,8 @@ pub async fn get_random_pokemon_species(
     Ok(species)
 }
 
-pub async fn get_pokemon_species_name(species: &PokemonSpecies) -> String {
-    let name = species
+pub async fn get_pokemon_species_name(pokemon_species: &PokemonSpecies) -> String {
+    let name = pokemon_species
         .names
         .iter()
         .find(|name| name.language.name == "en")
@@ -30,14 +30,14 @@ pub async fn get_pokemon_species_name(species: &PokemonSpecies) -> String {
 
 pub async fn get_pokemon_species_default_sprite_url(
     rustemon_client: &RustemonClient,
-    species: &PokemonSpecies,
+    pokemon_species: &PokemonSpecies,
 ) -> Result<Option<String>, Error> {
-    let variety = species
+    let variety = pokemon_species
         .varieties
         .iter()
         .find(|variety| variety.is_default)
         .unwrap();
-    let pokemon = variety.pokemon.follow(&rustemon_client).await?;
+    let pokemon = variety.pokemon.follow(rustemon_client).await?;
 
     Ok(pokemon.sprites.front_default)
 }
