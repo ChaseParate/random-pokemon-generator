@@ -10,7 +10,7 @@ pub async fn get_random_pokemon_species(
     rustemon_client: &RustemonClient,
 ) -> Result<PokemonSpecies, Error> {
     let mut rng = thread_rng();
-    let all_pokemon_species = pokemon_species::get_all_pages(rustemon_client).await?;
+    let all_pokemon_species = pokemon_species::get_all_entries(rustemon_client).await?;
 
     let species_resource = all_pokemon_species.choose(&mut rng).unwrap();
     let species = species_resource.follow(rustemon_client).await?;
