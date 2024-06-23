@@ -27,7 +27,7 @@ pub fn get_pokemon_species_name(pokemon_species: &PokemonSpecies) -> &str {
         .unwrap()
 }
 
-pub async fn get_pokemon_species_default_sprite_url(
+pub async fn get_pokemon_species_sprite_url(
     rustemon_client: &RustemonClient,
     pokemon_species: &PokemonSpecies,
 ) -> Result<Option<String>, Error> {

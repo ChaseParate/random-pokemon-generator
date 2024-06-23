@@ -1,9 +1,9 @@
 use std::io::{self, Write};
 
-use ::image::GenericImageView;
+use image::{DynamicImage, GenericImageView};
 use rustemon::client::{CacheMode, Environment, RustemonClientBuilder};
 
-mod image;
+mod sprite;
 mod pokemon;
 
 fn clear_screen() {
@@ -11,10 +11,8 @@ fn clear_screen() {
     io::stdout().flush().unwrap();
 }
 
-async fn draw_image(image_url: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let image = image::download_from_url(image_url).await?;
-    let image = image::crop_to_content(&image);
-    let (sprite_width, sprite_height) = image.dimensions();
+async fn draw_image(sprite: &DynamicImage) -> Result<(), Box<dyn std::error::Error>> {
+    let (sprite_width, sprite_height) = sprite.dimensions();
 
     let config = viuer::Config {
         transparent: true,
@@ -23,7 +21,7 @@ async fn draw_image(image_url: &str) -> Result<(), Box<dyn std::error::Error>> {
         ..Default::default()
     };
 
-    viuer::print(&image, &config)?;
+    viuer::print(&sprite, &config)?;
 
     Ok(())
 }
@@ -37,14 +35,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let species = pokemon::get_random_pokemon_species(&rustemon_client).await?;
 
-    clear_screen();
-
-    let default_sprite_url =
-        pokemon::get_pokemon_species_default_sprite_url(&rustemon_client, &species)
+    let sprite_url =
+        pokemon::get_pokemon_species_sprite_url(&rustemon_client, &species)
             .await?
             .unwrap();
+    let sprite = sprite::crop_to_content(&sprite::download_from_url(&sprite_url).await?);
 
-    draw_image(&default_sprite_url).await?;
+    clear_screen();
+    draw_image(&sprite).await?;
 
     let name = pokemon::get_pokemon_species_name(&species);
     println!("You rolled {name}!");
