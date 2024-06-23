@@ -46,8 +46,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     draw_image(&default_sprite_url).await?;
 
-    let name = pokemon::get_pokemon_species_name(&species).await;
-    println!("You rolled {}!", name);
+    let name = pokemon::get_pokemon_species_name(&species);
+    println!("You rolled {name}!");
 
     Ok(())
 }

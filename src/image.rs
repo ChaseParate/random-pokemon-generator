@@ -25,25 +25,11 @@ pub fn crop_to_content(image: &DynamicImage) -> DynamicImage {
     };
 
     let rows: Vec<bool> = (0..height)
-        .map(|y| {
-            for x in 0..width {
-                if get_pixel_alpha(x, y) > 0 {
-                    return true;
-                }
-            }
-            false
-        })
+        .map(|y| (0..width).any(|x| get_pixel_alpha(x, y) > 0))
         .collect();
 
     let columns: Vec<bool> = (0..width)
-        .map(|x| {
-            for y in 0..height {
-                if get_pixel_alpha(x, y) > 0 {
-                    return true;
-                }
-            }
-            false
-        })
+        .map(|x| (0..height).any(|y| get_pixel_alpha(x, y) > 0))
         .collect();
 
     let top_margin = rows.iter().position(|row| *row).unwrap() as u32;

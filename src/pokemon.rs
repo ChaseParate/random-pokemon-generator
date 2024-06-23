@@ -18,14 +18,13 @@ pub async fn get_random_pokemon_species(
     Ok(species)
 }
 
-pub async fn get_pokemon_species_name(pokemon_species: &PokemonSpecies) -> String {
-    let name = pokemon_species
+pub fn get_pokemon_species_name(pokemon_species: &PokemonSpecies) -> &str {
+    pokemon_species
         .names
         .iter()
         .find(|name| name.language.name == "en")
-        .unwrap();
-
-    name.name.clone()
+        .map(|name| &name.name)
+        .unwrap()
 }
 
 pub async fn get_pokemon_species_default_sprite_url(
