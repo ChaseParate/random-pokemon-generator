@@ -24,18 +24,13 @@ pub fn crop_to_content(image: &DynamicImage) -> DynamicImage {
         a
     };
 
-    let rows: Vec<bool> = (0..height)
-        .map(|y| (0..width).any(|x| get_pixel_alpha(x, y) > 0))
-        .collect();
+    let mut row_iter = (0..height).map(|y| (0..width).any(|x| get_pixel_alpha(x, y) > 0));
+    let top_margin = row_iter.position(|row| row).unwrap() as u32;
+    let bottom_margin = row_iter.rev().position(|row| row).unwrap() as u32;
 
-    let columns: Vec<bool> = (0..width)
-        .map(|x| (0..height).any(|y| get_pixel_alpha(x, y) > 0))
-        .collect();
-
-    let top_margin = rows.iter().position(|row| *row).unwrap() as u32;
-    let bottom_margin = rows.iter().rev().position(|row| *row).unwrap() as u32;
-    let left_margin = columns.iter().position(|column| *column).unwrap() as u32;
-    let right_margin = columns.iter().rev().position(|column| *column).unwrap() as u32;
+    let mut column_iter = (0..width).map(|x| (0..height).any(|y| get_pixel_alpha(x, y) > 0));
+    let left_margin = column_iter.position(|column| column).unwrap() as u32;
+    let right_margin = column_iter.rev().position(|column| column).unwrap() as u32;
 
     let new_width = width - (left_margin + right_margin);
     let new_height = height - (top_margin + bottom_margin);
