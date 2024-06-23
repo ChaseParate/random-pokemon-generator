@@ -1,26 +1,11 @@
 use image::{DynamicImage, GenericImageView};
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum DownloadImageError {
-    ReqwestError(reqwest::Error),
-    ImageError(image::ImageError),
-}
-impl std::fmt::Display for DownloadImageError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let format = format!("{:?}", self);
-        f.write_str(&format)
-    }
-}
-impl std::error::Error for DownloadImageError {}
-impl From<reqwest::Error> for DownloadImageError {
-    fn from(value: reqwest::Error) -> Self {
-        DownloadImageError::ReqwestError(value)
-    }
-}
-impl From<image::ImageError> for DownloadImageError {
-    fn from(value: image::ImageError) -> Self {
-        DownloadImageError::ImageError(value)
-    }
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
+    #[error(transparent)]
+    ImageError(#[from] image::ImageError),
 }
 
 pub async fn download_from_url(url: &str) -> Result<DynamicImage, DownloadImageError> {
