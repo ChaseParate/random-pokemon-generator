@@ -1,7 +1,7 @@
 use std::io::{self, Write};
 
 use image::{DynamicImage, GenericImageView};
-use rustemon::client::{CacheMode, Environment, RustemonClientBuilder};
+use rustemon::client::{CACacheManager, CacheMode, Environment, RustemonClientBuilder};
 
 mod pokemon;
 mod sprite;
@@ -31,6 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let rustemon_client = RustemonClientBuilder::default()
         .with_environment(Environment::Production)
         .with_mode(CacheMode::ForceCache)
+        .with_manager(CACacheManager::default())
         .try_build()?;
 
     let species = pokemon::get_random_pokemon_species(&rustemon_client).await?;
