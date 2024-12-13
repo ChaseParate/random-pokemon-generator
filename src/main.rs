@@ -1,14 +1,18 @@
-use std::io::{self, Write};
+use std::io;
 
+use crossterm::{
+    terminal::{Clear, ClearType},
+    ExecutableCommand,
+};
 use image::DynamicImage;
 use rustemon::client::{CACacheManager, CacheMode, Environment, RustemonClientBuilder};
 
 mod pokemon;
 mod sprite;
 
-fn clear_screen() {
-    print!("\x1B[2J\x1B[1;1H");
-    io::stdout().flush().unwrap();
+fn clear_screen() -> io::Result<()> {
+    io::stdout().execute(Clear(ClearType::All))?;
+    Ok(())
 }
 
 fn draw_image(sprite: &DynamicImage) -> viuer::ViuResult {
@@ -36,7 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap();
     let sprite = sprite::crop_to_content(&sprite::download_from_url(&sprite_url).await?);
 
-    clear_screen();
+    clear_screen()?;
     draw_image(&sprite)?;
 
     println!(
