@@ -11,12 +11,11 @@ fn clear_screen() {
     io::stdout().flush().unwrap();
 }
 
-async fn draw_image(sprite: &DynamicImage) -> Result<(), Box<dyn std::error::Error>> {
+fn draw_image(sprite: &DynamicImage) -> viuer::ViuResult {
     let config = viuer::Config {
         transparent: true,
         ..Default::default()
     };
-
     viuer::print(&sprite, &config)?;
 
     Ok(())
@@ -38,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sprite = sprite::crop_to_content(&sprite::download_from_url(&sprite_url).await?);
 
     clear_screen();
-    draw_image(&sprite).await?;
+    draw_image(&sprite)?;
 
     println!(
         "You rolled {}!",
