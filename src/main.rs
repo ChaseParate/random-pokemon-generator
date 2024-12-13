@@ -1,6 +1,6 @@
 use std::io::{self, Write};
 
-use image::{DynamicImage, GenericImageView};
+use image::DynamicImage;
 use rustemon::client::{CACacheManager, CacheMode, Environment, RustemonClientBuilder};
 
 mod pokemon;
@@ -12,12 +12,8 @@ fn clear_screen() {
 }
 
 async fn draw_image(sprite: &DynamicImage) -> Result<(), Box<dyn std::error::Error>> {
-    let (sprite_width, sprite_height) = sprite.dimensions();
-
     let config = viuer::Config {
         transparent: true,
-        width: Some(sprite_width),
-        height: Some(sprite_height / 2),
         ..Default::default()
     };
 
@@ -44,8 +40,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     clear_screen();
     draw_image(&sprite).await?;
 
-    let name = pokemon::get_pokemon_species_name(&species);
-    println!("You rolled {name}!");
+    println!(
+        "You rolled {}!",
+        pokemon::get_pokemon_species_name(&species)
+    );
 
     Ok(())
 }

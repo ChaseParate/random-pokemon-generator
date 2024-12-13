@@ -35,18 +35,5 @@ pub fn crop_to_content(image: &DynamicImage) -> DynamicImage {
     let new_width = width - (left_margin + right_margin);
     let new_height = height - (top_margin + bottom_margin);
 
-    let mut new_image = DynamicImage::new_rgba8(new_width, new_height);
-    let image_buffer = new_image.as_mut_rgba8().unwrap();
-
-    for x in 0..new_width {
-        for y in 0..new_height {
-            let image_x = x + left_margin;
-            let image_y = y + top_margin;
-            let pixel = image.get_pixel(image_x, image_y);
-
-            image_buffer.put_pixel(x, y, pixel);
-        }
-    }
-
-    new_image
+    image.crop_imm(left_margin, top_margin, new_width, new_height)
 }
